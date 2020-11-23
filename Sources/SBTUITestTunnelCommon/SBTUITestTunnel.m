@@ -24,6 +24,7 @@
 
 #import "include/SBTUITestTunnel.h"
 
+NSString * const SBTUITunneledApplicationLaunchEnvironmentBonjourNameKey = @"SBTUITunneledApplicationLaunchEnvironmentBonjourNameKey";
 NSString * const SBTUITunneledApplicationLaunchEnvironmentPortKey = @"SBTUITunneledApplicationLaunchEnvironmentPortKey";
 NSString * const SBTUITunneledApplicationLaunchEnvironmentFingerprintKey = @"SBTUITunneledApplicationLaunchEnvironmentFingerprintKey";
 NSString * const SBTUITunneledApplicationDefaultHost = @"localhost";
