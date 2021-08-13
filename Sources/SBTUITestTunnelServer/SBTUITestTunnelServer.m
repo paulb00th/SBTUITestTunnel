@@ -237,6 +237,8 @@ static NSTimeInterval SBTUITunneledServerDefaultTimeout = 60.0;
             *returnObject = @{ SBTUITunnelResponseResultKey: ret };
             
             return YES;
+        } else {
+            BlockAssert(NO, @"[UITestTunnelServer] Custom command %@ not registered", customCommandName);
         }
     }
     
