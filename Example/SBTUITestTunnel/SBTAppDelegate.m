@@ -26,8 +26,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     #if DEBUG
-        [SBTUITestTunnelServer takeOff];
-
         [SBTUITestTunnelServer registerCustomCommandNamed:@"myCustomCommandReturnNil" block:^NSObject *(NSObject *object) {
             [[NSUserDefaults standardUserDefaults] setObject:object forKey:@"custom_command_test"];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -51,6 +49,8 @@
             }];
         }
         #endif
+    
+        [SBTUITestTunnelServer takeOff];
     #endif
     
     return YES;
