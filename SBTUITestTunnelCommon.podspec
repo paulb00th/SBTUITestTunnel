@@ -20,6 +20,7 @@ Pod::Spec.new do |s|
     s.xcconfig = { "OTHER_LDFLAGS" => "-ObjC" }
     s.pod_target_xcconfig = { :prebuild_configuration => 'debug' }
     s.library = 'z'
+    s.static_framework = true
 
     s.source_files = ['Sources/SBTUITestTunnelCommon/**/*.{h,m}', 'Sources/SBTUITestTunnelCommonSwift/**/*.{swift}']
 end
