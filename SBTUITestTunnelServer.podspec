@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
     s.static_framework = true
 
     s.source_files = 'Sources/SBTUITestTunnelServer/**/*.{h,m}'
-    
-    s.dependency 'SBTUITestTunnelCommon'
+
+    # s.dependency 'SBTUITestTunnelCommon'
     s.dependency 'GCDWebServer'
 end
