@@ -127,15 +127,18 @@ static NSTimeInterval SBTUITunneledServerDefaultTimeout = 60.0;
 
 - (void)takeOffOnce
 {
+    NSLog(@"]]]] takeOffOnce - 1");
     NSDictionary<NSString *, NSString *> *environment = [NSProcessInfo processInfo].environment;
     NSString *bonjourName = environment[SBTUITunneledApplicationLaunchEnvironmentBonjourNameKey];
 
     if (!bonjourName) {
+        NSLog(@"]]]] takeOffOnce - 2");
         // Required methods missing, presumely app wasn't launched from ui test
         NSLog(@"[UITestTunnelServer] required environment parameters missing, safely landing");
         return;
     }
 
+    NSLog(@"]]]] takeOffOnce - 3");
     Class requestClass = ([SBTUITunnelHTTPMethod isEqualToString:@"POST"]) ? [GCDWebServerURLEncodedFormRequest class] : [GCDWebServerRequest class];
 
     __weak typeof(self) weakSelf = self;
@@ -143,8 +146,10 @@ static NSTimeInterval SBTUITunneledServerDefaultTimeout = 60.0;
         __strong typeof(weakSelf)strongSelf = weakSelf;
         __block GCDWebServerDataResponse *ret;
 
+        NSLog(@"]]]] takeOffOnce - 4");
         dispatch_semaphore_t sem = dispatch_semaphore_create(0);
         dispatch_async(strongSelf.commandDispatchQueue, ^{
+            NSLog(@"]]]] takeOffOnce - 5");
             NSString *command = [request.path stringByReplacingOccurrencesOfString:@"/" withString:@""];
 
             NSString *commandString = [command stringByAppendingString:@":"];
@@ -152,6 +157,7 @@ static NSTimeInterval SBTUITunneledServerDefaultTimeout = 60.0;
             NSDictionary *response = nil;
 
             if (![strongSelf processCustomCommandIfNecessary:request returnObject:&response]) {
+                NSLog(@"]]]] takeOffOnce - 6");
                 if (![strongSelf respondsToSelector:commandSelector]) {
                     BlockAssert(NO, @"[UITestTunnelServer] Unhandled/unknown command! %@", command);
                 }
@@ -164,11 +170,14 @@ static NSTimeInterval SBTUITunneledServerDefaultTimeout = 60.0;
                 response = func(strongSelf, commandSelector, request);
             }
 
+            NSLog(@"]]]] takeOffOnce - 7");
             ret = [GCDWebServerDataResponse responseWithJSONObject:response];
 
+            NSLog(@"]]]] takeOffOnce - 8");
             dispatch_semaphore_signal(sem);
         });
 
+        NSLog(@"]]]] takeOffOnce - 9");
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
         return ret;
     }];
@@ -187,19 +196,23 @@ static NSTimeInterval SBTUITunneledServerDefaultTimeout = 60.0;
     [serverOptions setValue:@"_http._tcp." forKey:GCDWebServerOption_BonjourType];
     [GCDWebServer setLogLevel:0];
 
+    NSLog(@"]]]] Starting server with bonjour name: %@", bonjourName);
     NSLog(@"[SBTUITestTunnel] Starting server with bonjour name: %@", bonjourName);
 
     NSError *serverError = nil;
     if (![self.server startWithOptions:serverOptions error:&serverError]) {
+        NSLog(@"]]]] Failed to start server. %@", serverError.description);
         BlockAssert(NO, @"[UITestTunnelServer] Failed to start server. %@", serverError.description);
         return;
     }
 
     if (dispatch_semaphore_wait(self.launchSemaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(SBTUITunneledServerDefaultTimeout * NSEC_PER_SEC))) != 0) {
+        NSLog(@"]]]] Fail waiting for launch semaphore");
         BlockAssert(NO, @"[UITestTunnelServer] Fail waiting for launch semaphore");
         return;
     }
 
+    NSLog(@"]]]] Up and running!");
     NSLog(@"[UITestTunnelServer] Up and running!");
 }
 
